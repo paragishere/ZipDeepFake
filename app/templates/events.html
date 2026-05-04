@@ -1,0 +1,23 @@
+<h1>Security Events (SOC Logs)</h1>
+
+<table border="1">
+<tr>
+    <th>Type</th>
+    <th>IP</th>
+    <th>Endpoint</th>
+    <th>Method</th>
+    <th>Status</th>
+    <th>Time</th>
+</tr>
+
+{% for e in data %}
+<tr>
+    <td>{{ e['event_type'] }}</td>
+    <td>{{ e['ip'] }}</td>
+    <td>{{ e['endpoint'] }}</td>
+    <td>{{ e['method'] }}</td>
+    <td>{{ e['status'] }}</td>
+    <td>{{ e['timestamp'] }}</td>
+</tr>
+{% endfor %}
+</table>

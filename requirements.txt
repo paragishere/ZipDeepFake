@@ -1,0 +1,13 @@
+torch
+torchvision
+numpy
+pillow
+scikit-learn
+flask
+flask_sqlalchemy
+flask_login
+opencv-python
+torch
+torchvision
+numpy
+pillow

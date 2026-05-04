@@ -1,0 +1,481 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="hero-wrap">
+
+    <div class="hero-left">
+
+        <span class="tag">
+            AI Deepfake Detection
+        </span>
+
+        <h1 class="hero-title">
+            Detect Fake Videos
+            <br>
+            In Seconds
+        </h1>
+
+        <p class="hero-sub">
+           Upload any suspicious video and let our AI inspect manipulation patterns, morphing traces, frame inconsistencies, and face anomalies.
+        </p>
+
+        <div class="hero-actions">
+
+            <button class="btn" onclick="scrollToUpload()">
+                Start Scan
+            </button>
+
+            {% if not logged_in %}
+            <a href="/login">
+                <button class="btn secondary-btn">
+                    Login
+                </button>
+            </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- HERO RIGHT -->
+    <div class="hero-right">
+
+        <div class="glass-box face-box">
+
+            <img
+                src="{{ url_for('static', filename='face.gif') }}"
+                class="face-full"
+                alt="AI Scan"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ====================================== -->
+<!-- UPLOAD CARD -->
+<!-- ====================================== -->
+
+<div id="uploadSection" style="max-width:760px;margin:auto;">
+
+<div class="card upload-card">
+
+    <h2 class="section-title">
+        Upload Video
+    </h2>
+
+    <p class="section-sub">
+        Supports MP4 / AVI / MOV
+    </p>
+
+    {% if logged_in %}
+    <form action="/upload"
+          method="POST"
+          enctype="multipart/form-data"
+          id="uploadForm">
+    {% else %}
+    <form id="uploadFormGuest">
+    {% endif %}
+
+        <div id="dropZone" class="drop-zone">
+
+            <div class="upload-icon">
+                ⬆
+            </div>
+
+            <h3>Drag & Drop Video</h3>
+            <p>or click to browse</p>
+
+            <small id="fileName"></small>
+
+        </div>
+
+        <input
+            type="file"
+            id="fileInput"
+            name="video"
+            accept=".mp4,.avi,.mov"
+            hidden
+        >
+
+        <div id="previewWrap" class="preview-wrap">
+            <video id="videoPreview" controls></video>
+        </div>
+
+        <button class="btn full-btn">
+            Analyze Now
+        </button>
+
+    </form>
+
+</div>
+</div>
+
+
+
+<!-- LOGIN POPUP -->
+
+<div id="loginModal" class="modal-bg">
+
+    <div class="modal-card">
+
+        <h2>Login Required</h2>
+
+        <p>Please login to analyze videos.</p>
+
+        <div class="modal-btns">
+
+            <a href="/login">
+                <button class="btn">Login</button>
+            </a>
+
+            <a href="/register">
+                <button class="btn secondary-btn">
+                    Register
+                </button>
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- LOADER -->
+
+<div id="loaderOverlay" class="loader-bg">
+
+    <div class="loader-card">
+
+        <img
+            src="{{ url_for('static', filename='face.gif') }}"
+            class="loader-face"
+            alt="Loading"
+        >
+
+        <h2>Processing Video</h2>
+
+        <p id="stageText">
+            Uploading file...
+        </p>
+
+        <div class="bar-wrap">
+            <div id="progressBar"></div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<style>
+.hero-wrap{
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:40px;
+    align-items:center;
+    margin-bottom:50px;
+}
+
+.tag{
+    padding:8px 14px;
+    background:rgba(59,130,246,.1);
+    color:#60a5fa;
+    border-radius:30px;
+    font-size:14px;
+}
+
+.hero-title{
+    margin-top:20px;
+    font-size:56px;
+    line-height:1.1;
+}
+
+.hero-sub{
+    margin-top:18px;
+    color:#94a3b8;
+    max-width:560px;
+    font-size:18px;
+}
+
+.hero-actions{
+    margin-top:28px;
+    display:flex;
+    gap:14px;
+}
+
+.secondary-btn{
+    background:#111827;
+    border:1px solid #334155;
+}
+
+/* HERO BOX */
+.face-box{
+    height:360px;
+    border-radius:28px;
+    overflow:hidden;
+    position:relative;
+
+    background:
+    radial-gradient(circle at center,
+    rgba(59,130,246,.12),
+    rgba(15,23,42,.95));
+
+    border:1px solid rgba(255,255,255,.06);
+}
+
+/* FULL GIF */
+.face-full{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+
+    mix-blend-mode:screen;
+    opacity:.95;
+
+    filter:
+    brightness(1.1)
+    contrast(1.05)
+    drop-shadow(0 0 20px rgba(59,130,246,.25));
+}
+
+/* upload */
+.upload-card{
+    padding:35px;
+}
+
+.section-title{
+    font-size:32px;
+}
+
+.section-sub{
+    color:#94a3b8;
+    margin-top:8px;
+    margin-bottom:24px;
+}
+
+.drop-zone{
+    border:2px dashed #3b82f6;
+    border-radius:18px;
+    padding:45px 20px;
+    text-align:center;
+    cursor:pointer;
+    background:rgba(59,130,246,.04);
+    transition:.25s;
+}
+
+.drop-zone:hover{
+    background:rgba(59,130,246,.08);
+}
+
+.upload-icon{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.drop-zone h3{
+    font-size:24px;
+}
+
+.drop-zone p{
+    color:#94a3b8;
+    margin-top:8px;
+}
+
+.drop-zone small{
+    display:block;
+    margin-top:14px;
+    color:#60a5fa;
+}
+
+.preview-wrap{
+    display:none;
+    margin-top:22px;
+}
+
+.preview-wrap video{
+    width:100%;
+    border-radius:16px;
+    max-height:420px;
+    background:black;
+}
+
+.full-btn{
+    width:100%;
+    margin-top:20px;
+}
+
+/* popup */
+.modal-bg,
+.loader-bg{
+    position:fixed;
+    inset:0;
+    background:rgba(2,6,23,.82);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
+
+.modal-card,
+.loader-card{
+    width:420px;
+    background:#111827;
+    padding:34px;
+    border-radius:20px;
+    text-align:center;
+}
+
+.modal-card p,
+.loader-card p{
+    color:#94a3b8;
+    margin-top:12px;
+}
+
+.modal-btns{
+    margin-top:22px;
+    display:flex;
+    gap:12px;
+    justify-content:center;
+}
+
+/* loader gif no black */
+.loader-face{
+    width:180px;
+    height:180px;
+    object-fit:cover;
+    border-radius:18px;
+
+    mix-blend-mode:screen;
+
+    filter:
+    brightness(1.1)
+    contrast(1.05)
+    drop-shadow(0 0 20px rgba(59,130,246,.35));
+}
+
+.bar-wrap{
+    margin-top:22px;
+    height:10px;
+    border-radius:30px;
+    overflow:hidden;
+    background:#1e293b;
+}
+
+#progressBar{
+    width:0%;
+    height:100%;
+    background:linear-gradient(90deg,#3b82f6,#8b5cf6,#06b6d4);
+    transition:1s;
+}
+
+@media(max-width:900px){
+.hero-wrap{
+grid-template-columns:1fr;
+}
+.hero-title{
+font-size:42px;
+}
+}
+</style>
+
+
+
+<script>
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+const fileName = document.getElementById("fileName");
+const previewWrap = document.getElementById("previewWrap");
+const videoPreview = document.getElementById("videoPreview");
+
+const loginModal = document.getElementById("loginModal");
+const loader = document.getElementById("loaderOverlay");
+const progressBar = document.getElementById("progressBar");
+const stageText = document.getElementById("stageText");
+
+dropZone.onclick = ()=> fileInput.click();
+
+fileInput.onchange = ()=>{
+    if(fileInput.files.length){
+        const file = fileInput.files[0];
+        fileName.innerText = file.name;
+
+        const url = URL.createObjectURL(file);
+        videoPreview.src = url;
+        previewWrap.style.display = "block";
+    }
+};
+
+dropZone.ondragover = (e)=>{
+    e.preventDefault();
+};
+
+dropZone.ondrop = (e)=>{
+    e.preventDefault();
+
+    const file = e.dataTransfer.files[0];
+    fileInput.files = e.dataTransfer.files;
+
+    fileName.innerText = file.name;
+
+    const url = URL.createObjectURL(file);
+    videoPreview.src = url;
+    previewWrap.style.display = "block";
+};
+
+function scrollToUpload(){
+    document.getElementById("uploadSection")
+    .scrollIntoView({behavior:"smooth"});
+}
+
+{% if not logged_in %}
+
+document.getElementById("uploadFormGuest")
+.addEventListener("submit",(e)=>{
+    e.preventDefault();
+    loginModal.style.display="flex";
+});
+
+{% else %}
+
+document.getElementById("uploadForm")
+.addEventListener("submit",()=>{
+
+    loader.style.display="flex";
+
+    const steps = [
+        {p:20,t:"Uploading video..."},
+        {p:42,t:"Reading frames..."},
+        {p:65,t:"Running AI engine..."},
+        {p:84,t:"Checking anomalies..."},
+        {p:97,t:"Generating result..."}
+    ];
+
+    let i=0;
+
+    const timer=setInterval(()=>{
+
+        if(i<steps.length){
+            progressBar.style.width=steps[i].p+"%";
+            stageText.innerText=steps[i].t;
+            i++;
+        }else{
+            clearInterval(timer);
+        }
+
+    },1400);
+
+});
+
+{% endif %}
+</script>
+
+{% endblock %}

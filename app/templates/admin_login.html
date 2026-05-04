@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="auth-wrap">
+
+    <div class="card auth-card">
+
+        <div class="fa-solid fa-shield-halved">
+            🛡
+        </div>
+
+        <h1 class="title-white">
+            Admin Access
+        </h1>
+
+        <p class="muted">
+            Secure administrator login
+        </p>
+
+        <form method="POST" action="/admin/login" class="auth-form">
+
+            <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                required
+            >
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+            >
+
+            <button class="btn full-btn">
+                Login
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<style>
+.auth-wrap{
+    min-height:82vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.auth-card{
+    width:430px;
+    padding:38px;
+    border-radius:22px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.06);
+    backdrop-filter:blur(14px);
+    box-shadow:0 20px 45px rgba(0,0,0,.28);
+    animation:fadeUp .7s ease;
+}
+
+.shield-icon{
+    width:72px;
+    height:72px;
+    margin:auto;
+    border-radius:18px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:34px;
+
+    background:linear-gradient(135deg,#3b82f6,#6366f1);
+    box-shadow:0 15px 35px rgba(59,130,246,.25);
+}
+
+.title-white{
+    text-align:center;
+    margin-top:20px;
+    font-size:34px;
+    font-weight:800;
+    color:#ffffff;
+}
+
+.muted{
+    text-align:center;
+    margin-top:10px;
+    color:#94a3b8;
+    font-size:15px;
+}
+
+.auth-form{
+    margin-top:28px;
+}
+
+.auth-form input{
+    width:100%;
+    padding:14px 16px;
+    margin-bottom:14px;
+
+    border:none;
+    outline:none;
+
+    border-radius:14px;
+
+    background:#0f172a;
+    color:#ffffff;
+    font-size:15px;
+}
+
+.auth-form input::placeholder{
+    color:#64748b;
+}
+
+.full-btn{
+    width:100%;
+    margin-top:8px;
+}
+
+/* animation */
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(25px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+</style>
+
+{% endblock %}

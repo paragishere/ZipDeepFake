@@ -1,0 +1,50 @@
+<style>
+.navbar {
+    background: #020617;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-left {
+    font-weight: bold;
+}
+
+.nav-right a {
+    margin-left: 15px;
+    color: white;
+    text-decoration: none;
+}
+
+.profile {
+    background: #1e293b;
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+</style>
+
+<div class="navbar">
+
+    <!-- LEFT -->
+    <div class="nav-left">
+        DeepFake Detector
+    </div>
+
+    <!-- RIGHT -->
+    <div class="nav-right">
+
+        {% if session.get('user') %}
+            <span class="profile">
+                {{ session['user'] }}
+            </span>
+
+            <a href="/">Home</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+        {% endif %}
+
+    </div>
+
+</div>
